@@ -11,18 +11,25 @@ import io.restassured.specification.ResponseSpecification;
 
 public class PetStoreModule extends AbstractModule {
 
-  private static final String BASE_URL = "https://petstore.swagger.io/v2";
+  /** URL по‑умолчанию (production). */
+  private static final String DEFAULT_BASE_URL = "https://petstore.swagger.io/v2";
 
   @Override
   protected void configure() {
-
+    // явных биндов не требуется – всё @Provides
   }
 
   @Provides
   @Singleton
   public RequestSpecification provideRequestSpecification() {
+    /* 1) -Dbase.url=…   2) $BASE_URL   3) дефолт */
+    String baseUrl = System.getProperty(
+        "base.url",
+        System.getenv().getOrDefault("BASE_URL", DEFAULT_BASE_URL)
+    );
+
     return new RequestSpecBuilder()
-        .setBaseUri(BASE_URL)
+        .setBaseUri(baseUrl)
         .setContentType(ContentType.JSON)
         .build();
   }

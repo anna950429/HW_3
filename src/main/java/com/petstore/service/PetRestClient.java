@@ -14,7 +14,8 @@ public class PetRestClient {
     private final ResponseSpecification responseSpec;
 
     @Inject
-    public PetRestClient(RequestSpecification requestSpec, ResponseSpecification responseSpec) {
+    public PetRestClient(RequestSpecification requestSpec,
+        ResponseSpecification responseSpec) {
         this.requestSpec = requestSpec;
         this.responseSpec = responseSpec;
     }
@@ -35,6 +36,17 @@ public class PetRestClient {
             .pathParam("petId", petId)
             .when()
             .get("/pet/{petId}")
-            .then();
+            .then()
+            .spec(responseSpec);
+    }
+
+    public ValidatableResponse deletePet(long petId) {
+        return given()
+            .spec(requestSpec)
+            .pathParam("petId", petId)
+            .when()
+            .delete("/pet/{petId}")
+            .then()
+            .spec(responseSpec);
     }
 }
